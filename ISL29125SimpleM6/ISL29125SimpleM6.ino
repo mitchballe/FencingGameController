@@ -23,8 +23,10 @@ Bounce MinusTime = Bounce();
 // The red score
 unsigned int redScore = 0;
 
-boolean playPauseStatus = true;
+boolean playPauseStatus = false;
+boolean minusRedScoreStatus = false;
 boolean gameStatus = false;
+
 
 // The green score
 unsigned int greenScore = 0;
@@ -108,7 +110,15 @@ boolean checkTime() {
 
 // function to detect the button push and avoid bouncing
 void buttonControl() {
+  playPauseStatus = false;
   while (playPauseStatus == false) {
+    MinusRedScore.update();
+    minusRedScoreStatus=MinusRedScore.fell();
+    if (minusRedScoreStatus) {
+    redScore--;
+    score(); //print score
+    minusRedScoreStatus=false;
+    }
     PlayPause.update();
     playPauseStatus = PlayPause.fell();
   }
@@ -196,7 +206,6 @@ void loop()
     elapseTime(); //print time
     hitStatus = 0;
     Serial.println("HIT BUTTON TO CONTINUE GAME");
-    playPauseStatus = false;
     buttonControl();
     T.ResumeTimer();
   }
@@ -210,7 +219,6 @@ void loop()
     hitStatus = 0;
     T.ResetTimer();
     Serial.println("HIT BUTTON TO START NEW GAME");
-    playPauseStatus = false;
     buttonControl();
     T.ResumeTimer();
   }
